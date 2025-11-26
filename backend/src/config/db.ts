@@ -4,7 +4,7 @@ import { appConfig } from "@/config/appConfig";
 const mongoUrl = appConfig.dbUrl;
 
 export const connectDB = async () => {
-  await mongoose.connect(mongoUrl);
+  await mongoose.connect(mongoUrl, { dbName: appConfig.dbName.app });
 
   console.log("MongoDB connected via Mongoose");
 

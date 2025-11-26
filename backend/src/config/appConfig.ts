@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 export const appConfig = {
   port: process.env.PORT || 5050,
   env: process.env.NODE_ENV || "production",
@@ -10,4 +13,8 @@ export const appConfig = {
     "your-refresh-secret-key-change-in-production",
   jwtRefreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || "7d",
   maxPageSize: Number(process.env.PAGE_SIZE) || 20,
+  dbName: {
+    logs: "logsDB",
+    app: "appDB",
+  },
 };

@@ -30,7 +30,7 @@ export const logger = winston.createLogger({
 export const addMongoDBTransport = (mongooseConnection: any) => {
   logger.add(
     new (winston.transports as any).MongoDB({
-      db: mongooseConnection.useDb("logsDB"),
+      db: mongooseConnection.useDb(appConfig.dbName.logs),
       collection: "logs",
       level: appConfig.logLevel,
       tryReconnect: true,
