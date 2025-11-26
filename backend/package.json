@@ -4,7 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:verbose": "jest --verbose",
+    "dev": "tsc-watch --onSuccess \"sh -c 'tsc-alias && node dist/server.js'\"",
+    "build": "tsc && tsc-alias",
+    "start": "node ./dist/server.js",
+    "build:start": "tsc && tsc-alias && node ./dist/server.js",
+    "seed": "tsc && tsc-alias && node dist/scripts/seed.js",
+    "db:clear": "tsc && tsc-alias && node dist/scripts/clear.js",
+    "db:reset": "npm run db:clear && npm run seed"
   },
   "keywords": [],
   "author": "",
@@ -14,9 +24,29 @@
     "@tsconfig/node24": "^24.0.3",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.5",
+    "@types/jest": "^30.0.0",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/morgan": "^1.9.10",
     "@types/node": "^24.10.1",
+    "@types/supertest": "^6.0.3",
+    "jest": "^30.2.0",
+    "mongodb-memory-server": "^10.3.0",
+    "supertest": "^7.1.4",
+    "ts-jest": "^29.4.5",
+    "tsc-alias": "^1.8.16",
     "tsc-watch": "^7.2.0",
     "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^9.0.0",
+    "morgan": "^1.10.1",
+    "winston": "^3.18.3",
+    "winston-mongodb": "^7.0.1",
+    "zod": "^4.1.13"
   }
 }

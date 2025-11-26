@@ -1,0 +1,31 @@
+/** @type {import('ts-jest').JestConfigWithTsJest} */
+module.exports = {
+  preset: "ts-jest",
+  testEnvironment: "node",
+  roots: ["<rootDir>/src"],
+  testMatch: ["**/__tests__/**/*.test.ts", "**/?(*.)+(spec|test).ts"],
+  collectCoverageFrom: [
+    "src/**/*.ts",
+    "!src/**/*.d.ts",
+    "!src/server.ts",
+    "!src/**/__tests__/**",
+  ],
+  coverageDirectory: "coverage",
+  coverageReporters: ["text", "lcov", "html"],
+  moduleNameMapper: {
+    "^@/config/(.*)$": "<rootDir>/src/config/$1",
+    "^@/models/(.*)$": "<rootDir>/src/models/$1",
+    "^@/controllers/(.*)$": "<rootDir>/src/controllers/$1",
+    "^@/middleware/(.*)$": "<rootDir>/src/middleware/$1",
+    "^@/routes/(.*)$": "<rootDir>/src/routes/$1",
+    "^@/validators/(.*)$": "<rootDir>/src/validators/$1",
+    "^@/utils/(.*)$": "<rootDir>/src/utils/$1",
+  },
+  setupFilesAfterEnv: ["<rootDir>/src/__tests__/setup.ts"],
+  testTimeout: 30000,
+  verbose: true,
+  forceExit: true,
+  clearMocks: true,
+  resetMocks: true,
+  restoreMocks: true,
+};

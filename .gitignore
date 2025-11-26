@@ -39,3 +39,9 @@ node_modules/
 /frontend/.env.development.local
 /frontend/.env.production.local
 /frontend/.env.test.local
+
+
+/notes
+
+coverage/
+.vscode/
