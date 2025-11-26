@@ -44,8 +44,6 @@ const refreshTokenSchema = new Schema<IRefreshToken, IRefreshTokenModel>(
   }
 );
 
-// Index for better query performance
-refreshTokenSchema.index({ token: 1 });
 refreshTokenSchema.index({ userId: 1 });
 refreshTokenSchema.index({ expiresAt: 1 }); // For automatic cleanup
 

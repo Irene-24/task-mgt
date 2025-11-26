@@ -1,12 +1,11 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
+import swaggerUi from "swagger-ui-express";
 import { morganMiddleware, logger, addMongoDBTransport } from "@/utils/logger";
 import { connectDB } from "@/config/db";
+import { swaggerSpec } from "@/config/swagger";
 import v1 from "@/routes/v1";
-import {
-  errorHandler,
-  notFoundHandler,
-} from "@/middleware/errorHandler";
+import { errorHandler, notFoundHandler } from "@/middleware/errorHandler";
 
 export const createServer = async () => {
   const app = express();
@@ -24,6 +23,15 @@ export const createServer = async () => {
     .use(cors())
     .use(morganMiddleware)
     .use(express.json());
+
+  // Swagger documentation
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+  // Swagger JSON endpoint for Postman import
+  app.get("/api-docs.json", (req: Request, res: Response) => {
+    res.setHeader("Content-Type", "application/json");
+    res.send(swaggerSpec);
+  });
 
   app.use("/v1", v1);
 

@@ -57,9 +57,15 @@ export const getTasks = asyncHandler(async (req: Request, res: Response) => {
     query.status = status;
   }
 
-  // Add text search
+  // Add partial text search using regex for better matching
   if (search) {
-    query.$text = { $search: search as string };
+    const searchRegex = new RegExp(search as string, "i"); // Case-insensitive
+    query.$or = [
+      { createdBy: userId, title: searchRegex },
+      { createdBy: userId, description: searchRegex },
+      { assignedTo: userId, title: searchRegex },
+      { assignedTo: userId, description: searchRegex },
+    ];
   }
 
   // Add cursor-based pagination with _id for stable sorting

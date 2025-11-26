@@ -115,8 +115,6 @@ userSchema.virtual("fullName").get(function (this: IUser) {
   return `${this.firstName} ${this.lastName}`;
 });
 
-// Index for better query performance
-userSchema.index({ email: 1 });
 userSchema.index({ createdAt: -1 });
 
 // Hash password before saving

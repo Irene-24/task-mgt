@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import { createServer } from "./app";
 import { appConfig } from "@/config/appConfig";
 

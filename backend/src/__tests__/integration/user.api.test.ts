@@ -146,6 +146,19 @@ describe("User API Integration Tests", () => {
       expect(response.body.user.email).toBe(user.email);
     });
 
+    it("should allow users to update their own role", async () => {
+      const user = await createTestUser();
+      const token = generateTestAccessToken(user._id, user.role);
+
+      const response = await request(app)
+        .patch(`/v1/users/${user._id}/role`)
+        .set(getAuthHeader(token))
+        .send({ role: UserRole.ADMIN })
+        .expect(200);
+
+      expect(response.body.user.role).toBe(UserRole.ADMIN);
+    });
+
     it("should fail with invalid role", async () => {
       const admin = await createTestAdmin();
       const user = await createTestUser();

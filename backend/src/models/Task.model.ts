@@ -58,9 +58,9 @@ const taskSchema = new Schema<ITask>(
     toJSON: {
       virtuals: true,
       transform: function (_doc, ret) {
-        // Remove version key
-        // Use a type assertion to avoid TypeScript 'delete' operand must be optional error
+        // Remove version key and virtual id field
         delete (ret as any).__v;
+        delete (ret as any).id;
         return ret;
       },
     },
