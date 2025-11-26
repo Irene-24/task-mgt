@@ -10,19 +10,4 @@ const startServer = async () => {
   });
 };
 
-// For Vercel serverless deployment
-let appInstance: any = null;
-
-const handleRequest = async (req: any, res: any) => {
-  if (!appInstance) {
-    appInstance = await createServer();
-  }
-  return appInstance(req, res);
-};
-
-export default handleRequest;
-
-// Only start server if not in serverless environment
-if (process.env.VERCEL !== "1") {
-  startServer();
-}
+startServer();
