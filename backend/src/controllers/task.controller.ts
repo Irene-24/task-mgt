@@ -5,6 +5,24 @@ import { appConfig } from "@/config/appConfig";
 import { TaskStatus } from "@/utils/constants";
 import { hasTaskAccess } from "@/utils/taskAccess";
 
+// Create new task
+export const createTask = asyncHandler(async (req: Request, res: Response) => {
+  const { title, description, status, assignedTo } = req.body;
+  const userId = req.user._id;
+
+  const task = await Task.create({
+    title,
+    description,
+    status: status || TaskStatus.PENDING,
+    createdBy: userId,
+    assignedTo: assignedTo || undefined,
+  });
+
+  res.status(201).json({
+    task,
+  });
+});
+
 // Get task statistics for dashboard
 export const getTaskStats = asyncHandler(
   async (req: Request, res: Response) => {
@@ -137,24 +155,6 @@ export const getTaskById = asyncHandler(async (req: Request, res: Response) => {
   }
 
   res.status(200).json({
-    task,
-  });
-});
-
-// Create new task
-export const createTask = asyncHandler(async (req: Request, res: Response) => {
-  const { title, description, status, assignedTo } = req.body;
-  const userId = req.user._id;
-
-  const task = await Task.create({
-    title,
-    description,
-    status: status || TaskStatus.PENDING,
-    createdBy: userId,
-    assignedTo: assignedTo || undefined,
-  });
-
-  res.status(201).json({
     task,
   });
 });
