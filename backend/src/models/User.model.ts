@@ -98,6 +98,8 @@ const userSchema = new Schema<IUser, IUserModel>(
       transform: function (_doc, ret) {
         // Remove sensitive fields from JSON output
         if (ret) {
+          (ret as any).id = ret._id.toString();
+          delete (ret as any)._id;
           delete (ret as any).password;
           delete (ret as any).__v;
         }

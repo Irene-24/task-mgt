@@ -263,7 +263,7 @@ describe("Task API Integration Tests", () => {
         .set(getAuthHeader(token))
         .expect(200);
 
-      expect(response.body.task._id).toBe(task._id.toString());
+      expect(response.body.task.id).toBe(task._id.toString());
     });
 
     it("should fail if user has no access to task", async () => {

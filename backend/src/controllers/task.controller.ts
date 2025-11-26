@@ -93,6 +93,8 @@ export const getTasks = asyncHandler(async (req: Request, res: Response) => {
     typeof limit === "string" ? Number.parseInt(limit, 10) : Number(limit);
 
   const tasks = await Task.find(query)
+    .populate("createdBy", "firstName lastName email fullName")
+    .populate("assignedTo", "firstName lastName email fullName")
     .sort(sortObj)
     .limit(limitNum + 1);
 

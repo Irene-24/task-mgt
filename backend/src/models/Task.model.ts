@@ -56,11 +56,14 @@ const taskSchema = new Schema<ITask>(
   {
     timestamps: true, // Automatically adds createdAt and updatedAt
     toJSON: {
-      virtuals: true,
+      virtuals: false,
       transform: function (_doc, ret) {
-        // Remove version key and virtual id field
-        delete (ret as any).__v;
-        delete (ret as any).id;
+        // Convert _id to id and remove version key
+        if (ret) {
+          (ret as any).id = ret._id.toString();
+          delete (ret as any)._id;
+          delete (ret as any).__v;
+        }
         return ret;
       },
     },
