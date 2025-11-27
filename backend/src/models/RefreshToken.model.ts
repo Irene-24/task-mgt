@@ -45,7 +45,8 @@ const refreshTokenSchema = new Schema<IRefreshToken, IRefreshTokenModel>(
 );
 
 refreshTokenSchema.index({ userId: 1 });
-refreshTokenSchema.index({ expiresAt: 1 }); // For automatic cleanup
+// TTL index - MongoDB will automatically delete documents when expiresAt is reached
+refreshTokenSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 // Static method to revoke token
 refreshTokenSchema.statics.revokeToken = function (token: string) {
