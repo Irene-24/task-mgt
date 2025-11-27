@@ -1,9 +1,10 @@
 {
-    "version": 2,
-    "routes": [
+    "rewrites": [
         {
-            "src": "/(.*)",
-            "dest": "/"
+            "source": "/(.*)",
+            "destination": "/"
         }
-    ]
+    ],
+    "buildCommand": "npm run build",
+    "outputDirectory": "dist"
 }
