@@ -18,7 +18,7 @@ const options: swaggerJsdoc.Options = {
       {
         url:
           appConfig.env === "production"
-            ? process.env.PROD_URL || "https://your-production-url.com"
+            ? appConfig.prodUrl
             : `http://localhost:${appConfig.port}`,
         description:
           appConfig.env === "production"

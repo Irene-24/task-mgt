@@ -17,4 +17,5 @@ export const appConfig = {
     logs: "logsDB",
     app: "appDB",
   },
+  prodUrl: process.env.PROD_URL || "https://task-mgt-be.onrender.com",
 };
