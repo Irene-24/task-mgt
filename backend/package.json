@@ -1,8 +1,16 @@
 {
-  "name": "backend",
+  "name": "task-management-api",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A robust RESTful API for task management built with Node.js, Express, TypeScript, and MongoDB",
+  "main": "dist/server.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Irene-24/task-mgt.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Irene-24/task-mgt/issues"
+  },
+  "homepage": "https://github.com/Irene-24/task-mgt#readme",
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
@@ -16,8 +24,17 @@
     "db:clear": "tsc && tsc-alias && node dist/scripts/clear.js",
     "db:reset": "npm run db:clear && npm run seed"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "task-management",
+    "rest-api",
+    "express",
+    "typescript",
+    "mongodb",
+    "jwt",
+    "swagger",
+    "nodejs"
+  ],
+  "author": "Irene-24",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
