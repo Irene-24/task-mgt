@@ -46,4 +46,3 @@ node_modules/
 coverage/
 .vscode/
 .vercel
-.env*.local
