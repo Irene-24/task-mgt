@@ -61,7 +61,7 @@ const TaskStats = () => {
             <CheckCircle2 className="w-4 h-4 text-green-500" />
           </div>
           <div className="flex-1">
-            <p className="text-xs text-muted-foreground">Completed</p>
+            <p className="text-xs text-muted-foreground">Done</p>
             <p className="text-lg font-bold">{stats.completed}</p>
           </div>
         </div>

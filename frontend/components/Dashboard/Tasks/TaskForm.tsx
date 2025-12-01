@@ -23,13 +23,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { TASK_STATUS_LIST, TASK_STATUS_DETAILS } from "@/lib/constants";
 import { toast } from "sonner";
@@ -53,7 +49,7 @@ const schema = z.object({
     .max(1000, "Description cannot exceed 1000 characters"),
   status: z.enum(TASK_STATUS_LIST).optional(),
   assignedTo: z.string().optional(),
-  dueDate: z.string().optional(), // ISO date string
+  dueDate: z.string().optional().nullable(), // ISO date string
 });
 
 type SchemaType = z.infer<typeof schema>;
@@ -146,6 +142,8 @@ const TaskForm = ({ isLoading, task, onSubmitForm }: Props) => {
         dueDate: task.dueDate,
       };
 
+      console.log(resetData);
+
       form.reset(resetData);
     }
   }, [task, form]);
@@ -188,22 +186,18 @@ const TaskForm = ({ isLoading, task, onSubmitForm }: Props) => {
                       Status
                     </FormLabel>
 
-                    <Select {...field}>
-                      <FormControl>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select status..." />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectGroup>
-                          {TASK_STATUS_DETAILS.map((status) => (
-                            <SelectItem key={status.value} value={status.value}>
-                              {status.label}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
+                    <FormControl>
+                      <NativeSelect {...field} className="">
+                        {TASK_STATUS_DETAILS.map((statusOption) => (
+                          <NativeSelectOption
+                            key={statusOption.value}
+                            value={statusOption.value}
+                          >
+                            {statusOption.label}
+                          </NativeSelectOption>
+                        ))}
+                      </NativeSelect>
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 );
