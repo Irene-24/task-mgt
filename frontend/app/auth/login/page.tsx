@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import Link from "next/link";
+import { Suspense } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -35,7 +36,7 @@ type SchemaType = z.infer<typeof schema>;
 
 const defaultValues: SchemaType = { email: "", password: "" };
 
-const LoginPage = () => {
+const LoginForm = () => {
   const form = useForm<SchemaType>({
     resolver: zodResolver(schema),
     defaultValues,
@@ -144,6 +145,14 @@ const LoginPage = () => {
         </form>
       </Form>
     </div>
+  );
+};
+
+const LoginPage = () => {
+  return (
+    <Suspense fallback={<div className="animate-pulse">Loading...</div>}>
+      <LoginForm />
+    </Suspense>
   );
 };
 

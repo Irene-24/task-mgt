@@ -23,9 +23,10 @@ import { getAPIErrMessage, handleFormErrors } from "@/helpers/errorHelpers";
 import AuthHeader from "@/components/Auth/AuthHeader";
 import { cn } from "@/lib/utils";
 import { FORM_STYLES } from "@/lib/app-styles";
-import { ROLE_LIST, UserRole } from "@/lib/constants";
+import { ROLE_LIST } from "@/lib/constants";
 import { useRouter } from "next/navigation";
 import { useRegisterMutation } from "@/services/auth-session";
+import { UserRole } from "@/types/user.types";
 
 const registerSchema = z
   .object({

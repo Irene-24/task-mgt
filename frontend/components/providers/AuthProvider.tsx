@@ -7,6 +7,7 @@ import React, {
   useRef,
   useState,
   PropsWithChildren,
+  Suspense,
 } from "react";
 import { toast } from "sonner";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
@@ -15,7 +16,7 @@ import { selectCurrentAuth } from "@/slices/auth.slice";
 import { AuthStatus } from "@/types/auth.types";
 import { LoaderCircle } from "lucide-react";
 
-const AuthProvider = ({ children }: PropsWithChildren) => {
+const AuthProviderContent = ({ children }: PropsWithChildren) => {
   const hasRefreshedRef = useRef(false);
   const user = useAppSelector(selectCurrentAuth);
   const pathname = usePathname();
@@ -77,6 +78,20 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
   }
 
   return <>{children}</>;
+};
+
+const AuthProvider = ({ children }: PropsWithChildren) => {
+  return (
+    <Suspense
+      fallback={
+        <div className="center w-full h-screen">
+          <LoaderCircle className="w-12 h-12" />
+        </div>
+      }
+    >
+      <AuthProviderContent>{children}</AuthProviderContent>
+    </Suspense>
+  );
 };
 
 export default AuthProvider;

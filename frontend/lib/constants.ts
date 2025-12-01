@@ -31,4 +31,4 @@ export const TASK_STATUS_DETAILS = [
 
 export const API_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:5050/v1";
-export const MAX_PAGE_SIZE = 3;
+export const MAX_PAGE_SIZE = 5;
