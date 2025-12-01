@@ -33,8 +33,9 @@ const PasswordInput = React.forwardRef<HTMLInputElement, InputProps>(
 
         <button
           type="button"
-          className="center p-1 absolute text-c5 z-10 right-2 top-1/2 -translate-y-1/2 "
+          className="center p-1 absolute text-foreground z-10 right-2 top-1/2 -translate-y-1/2 "
           onClick={toggle}
+          aria-label="Toggle visibility"
         >
           {show ? (
             <EyeClosedIcon className="w-5 h-5" />

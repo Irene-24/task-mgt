@@ -51,13 +51,14 @@ const userAuthSlice = createSlice({
           state.showToast = false;
         }
       )
-
       .addMatcher(
         isAnyOf(
           authSessionApi.endpoints.login.matchRejected,
           authSessionApi.endpoints.refresh.matchRejected
         ),
         (state) => {
+          console.log("Auth rejected, clearing credentials");
+
           state.authStatus = AuthStatus.rejected;
         }
       );

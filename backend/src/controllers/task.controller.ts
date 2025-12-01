@@ -7,7 +7,7 @@ import { hasTaskAccess } from "@/utils/taskAccess";
 
 // Create new task
 export const createTask = asyncHandler(async (req: Request, res: Response) => {
-  const { title, description, status, assignedTo } = req.body;
+  const { title, description, status, assignedTo, dueDate } = req.body;
   const userId = req.user._id;
 
   const task = await Task.create({
@@ -16,6 +16,7 @@ export const createTask = asyncHandler(async (req: Request, res: Response) => {
     status: status || TaskStatus.PENDING,
     createdBy: userId,
     assignedTo: assignedTo || undefined,
+    dueDate: dueDate || undefined,
   });
 
   res.status(201).json({

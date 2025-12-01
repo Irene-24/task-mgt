@@ -11,6 +11,7 @@ import useLogout from "@/hooks/useLogout";
 import { Button } from "@/ui/button";
 import { CheckCircle2, LogOutIcon } from "lucide-react";
 import TaskStats from "./Tasks/TaskStats";
+import UserCard from "./UserCard";
 
 export function AppSidebar() {
   const { logout } = useLogout();
@@ -36,6 +37,7 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
+        <UserCard />
         <Button onClick={logout} variant="outline">
           <LogOutIcon />
 

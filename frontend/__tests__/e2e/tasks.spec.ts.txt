@@ -1,0 +1,308 @@
+import { test, expect } from "@playwright/test";
+
+// Helper to login before each test
+async function loginAsUser(
+  page: any,
+  email = "john.doe@example.com",
+  password = "John@123"
+) {
+  await page.goto("/auth/login");
+  await page.getByLabel(/email address/i).fill(email);
+  await page.getByLabel(/password/i).fill(password);
+  await page.getByRole("button", { name: /log in/i }).click();
+  await expect(page).toHaveURL(/\/dashboard/);
+}
+
+test.describe("Task Management - CRUD Operations", () => {
+  test.beforeEach(async ({ page }) => {
+    await loginAsUser(page);
+  });
+
+  test("should display dashboard with task list", async ({ page }) => {
+    // Check for task stats in sidebar
+    await expect(page.getByText(/total tasks/i)).toBeVisible();
+    await expect(page.getByText(/in progress/i)).toBeVisible();
+    await expect(page.getByText(/completed/i)).toBeVisible();
+
+    // Check for filters
+    await expect(page.getByPlaceholder(/search for tasks/i)).toBeVisible();
+  });
+
+  test("should create a new task", async ({ page }) => {
+    // Get initial task count in DOM
+    const initialCount = await page.locator("h3").count();
+
+    // Click create task button (+ Add Task)
+    await page.getByRole("button", { name: /add task/i }).click();
+
+    // Wait for dialog to open
+    await page.waitForTimeout(500);
+
+    // Fill in task form
+    await page.getByLabel(/title/i).fill("E2E Test Task");
+    await page
+      .getByLabel(/description/i)
+      .fill("This is a test task created by E2E tests");
+
+    // Submit form - look for submit button in dialog
+    await page.getByRole("button", { name: /create task/i }).click();
+
+    // Wait for dialog to close (check that title input is no longer visible)
+    await page.waitForTimeout(1000);
+    await expect(page.getByLabel(/title/i)).not.toBeVisible();
+
+    // Wait for task list to update
+    await page.waitForTimeout(2000);
+
+    // Verify task count increased
+    const updatedCount = await page.locator("h3").count();
+    expect(updatedCount).toBeGreaterThan(initialCount);
+  });
+
+  test("should edit an existing task", async ({ page }) => {
+    // Wait for tasks to load
+    await page.waitForTimeout(2000);
+
+    // Check if there are any tasks first
+    const taskTitles = page.locator("h3");
+    const initialCount = await taskTitles.count();
+
+    if (initialCount === 0) {
+      // Skip test if no tasks
+      test.skip();
+      return;
+    }
+
+    // Click actions button
+    const actionsButton = page.getByRole("button", { name: "Actions" }).first();
+    await expect(actionsButton).toBeVisible();
+    await actionsButton.click();
+    await page.waitForTimeout(500);
+
+    // Click edit option
+    const editOption = page.getByText(/edit/i).first();
+    await expect(editOption).toBeVisible();
+    await editOption.click();
+    await page.waitForTimeout(500);
+
+    // Update task title
+    const titleInput = page.getByLabel(/title/i);
+    await expect(titleInput).toBeVisible();
+
+    // Get current value and modify it
+    const currentTitle = await titleInput.inputValue();
+    const newTitle = "Edited " + currentTitle;
+    await titleInput.clear();
+    await titleInput.fill(newTitle);
+
+    const updateButton = page.getByRole("button", { name: /update/i }).last();
+    await expect(updateButton).toBeEnabled();
+    await updateButton.click();
+
+    // Wait for dialog to close and task list to update
+    await page.waitForTimeout(3000);
+
+    // Verify task count stayed the same (edit, not create)
+    const finalCount = await page.locator("h3").count();
+    expect(finalCount).toBe(initialCount);
+
+    // Verify we're still on dashboard
+    await expect(page).toHaveURL(/\/dashboard/);
+  });
+
+  test("should filter tasks by status", async ({ page }) => {
+    // Wait for tasks to load
+    await page.waitForTimeout(1500);
+
+    // Look for status filter combobox (Radix UI Select component)
+    const statusFilter = page.getByRole("combobox").first();
+    await expect(statusFilter).toBeVisible();
+
+    // Click to open the select
+    await statusFilter.click();
+    await page.waitForTimeout(300);
+
+    // Select completed option from the dropdown
+    await page.getByRole("option", { name: "Completed" }).click();
+    await page.waitForTimeout(1000);
+
+    // Verify we're still on dashboard
+    await expect(page).toHaveURL(/\/dashboard/);
+  });
+
+  test("should search for tasks", async ({ page }) => {
+    // Wait for tasks to load
+    await page.waitForTimeout(1000);
+
+    // Type in search box
+    const searchBox = page.getByPlaceholder(/search for tasks/i);
+    await searchBox.fill("project");
+
+    // Wait for debounce and search
+    await page.waitForTimeout(1500);
+
+    // Verify search box has value
+    await expect(searchBox).toHaveValue("project");
+  });
+
+  test("should toggle task status", async ({ page }) => {
+    // Wait for tasks to load
+    await page.waitForTimeout(2000);
+
+    // Skip if no tasks
+    const taskCount = await page.locator("h3").count();
+    if (taskCount === 0) {
+      test.skip();
+      return;
+    }
+
+    // Click actions button
+    const actionsButton = page.getByRole("button", { name: "Actions" }).first();
+    await expect(actionsButton).toBeVisible();
+    await actionsButton.click();
+    await page.waitForTimeout(500);
+
+    // Click Update Status menu item
+    const updateStatusOption = page.getByText("Update Status");
+    await expect(updateStatusOption).toBeVisible();
+    await updateStatusOption.click();
+    await page.waitForTimeout(500);
+
+    // Select a status in the dialog
+    const statusCombobox = page.getByRole("combobox");
+    await expect(statusCombobox).toBeVisible();
+    await statusCombobox.click();
+    await page.waitForTimeout(300);
+
+    // Select completed status
+    await page.getByRole("option", { name: "Completed" }).click();
+    await page.waitForTimeout(300);
+
+    // Submit the status update
+    const updateButton = page.getByRole("button", { name: /update/i }).last();
+    await updateButton.click();
+
+    // Wait for dialog to close (update button should disappear)
+    await page.waitForTimeout(1500);
+    await expect(updateButton).not.toBeVisible();
+
+    // Verify still on dashboard
+    await expect(page).toHaveURL(/\/dashboard/);
+  });
+
+  test("should switch between grid and list view", async ({ page }) => {
+    // Wait for tasks to load
+    await page.waitForTimeout(1500);
+
+    // Look for view toggle buttons
+    const gridButton = page.getByRole("button", { name: /grid/i });
+    const listButton = page.getByRole("button", { name: /list/i });
+
+    // Both buttons should be visible
+    await expect(gridButton).toBeVisible();
+    await expect(listButton).toBeVisible();
+
+    // Switch to grid view and verify grid layout is applied
+    await gridButton.click();
+    await page.waitForTimeout(500);
+
+    // Find the tasks container and verify it has grid classes
+    const gridContainer = page.locator(".grid.grid-cols-1");
+    await expect(gridContainer).toBeVisible();
+    await expect(gridContainer).toHaveClass(/grid-cols-1/);
+    await expect(gridContainer).toHaveClass(/sm:grid-cols-2/);
+
+    // Verify grid button is active (default variant)
+    await expect(gridButton).not.toHaveClass(/variant.*outline/);
+
+    // Switch to list view
+    await listButton.click();
+    await page.waitForTimeout(500);
+
+    // Verify grid container is no longer visible (list mode doesn't use grid classes)
+    await expect(gridContainer).not.toBeVisible();
+
+    // Verify list button is now active
+    await expect(listButton).not.toHaveClass(/variant.*outline/);
+  });
+});
+
+test.describe("Task Management - Admin Operations", () => {
+  test.beforeEach(async ({ page }) => {
+    // Login as admin
+    await loginAsUser(page, "admin@example.com", "Admin@123");
+  });
+
+  test("should delete a task as admin", async ({ page }) => {
+    // Wait for page to load
+    await page.waitForTimeout(2000);
+
+    // Create a task first
+    await page.getByRole("button", { name: /add task/i }).click();
+    await page.waitForTimeout(500);
+
+    await page.getByLabel(/title/i).fill("Task to Delete");
+    await page.getByLabel(/description/i).fill("This task will be deleted");
+    await page.getByRole("button", { name: /create task/i }).click();
+
+    await page.waitForTimeout(2000);
+
+    // Click actions button on the newly created task
+    const actionsButton = page.getByRole("button", { name: "Actions" }).first();
+    await expect(actionsButton).toBeVisible();
+    await actionsButton.click();
+    await page.waitForTimeout(500);
+
+    // Click Delete Task menu item (use exact text to avoid matching task title)
+    const deleteOption = page.getByText("Delete Task");
+    await expect(deleteOption).toBeVisible();
+    await deleteOption.click();
+    await page.waitForTimeout(500);
+
+    // Get task count before deletion
+    const countBefore = await page.locator("h3").count();
+
+    // Confirm deletion in dialog
+    const confirmDeleteButton = page
+      .getByRole("button", { name: /delete/i })
+      .last();
+    await expect(confirmDeleteButton).toBeVisible();
+    await confirmDeleteButton.click();
+    await page.waitForTimeout(2000);
+
+    // Verify task count decreased
+    const countAfter = await page.locator("h3").count();
+    expect(countAfter).toBeLessThan(countBefore);
+  });
+});
+
+test.describe("Task Management - Load More", () => {
+  test.beforeEach(async ({ page }) => {
+    await loginAsUser(page);
+  });
+
+  test("should load more tasks when clicking load more button", async ({
+    page,
+  }) => {
+    // Wait for initial tasks to load
+    await page.waitForTimeout(1000);
+
+    // Check if "Load More" button exists
+    const loadMoreButton = page.getByRole("button", { name: /load more/i });
+    const isVisible = await loadMoreButton.isVisible();
+
+    if (isVisible) {
+      // Click load more
+      await loadMoreButton.click();
+
+      // Should show loading state (use .first() to avoid strict mode violation)
+      await expect(page.getByText(/loading\.\.\./i).first()).toBeVisible();
+
+      // Wait for more tasks to load
+      await page.waitForTimeout(1000);
+    } else {
+      // If no Load More button, skip this test
+      test.skip();
+    }
+  });
+});

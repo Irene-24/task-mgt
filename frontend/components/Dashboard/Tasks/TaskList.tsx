@@ -104,6 +104,7 @@ const TaskList = ({
         style={{
           contain: "strict",
         }}
+        data-view-mode={viewMode}
       >
         <div
           style={{
