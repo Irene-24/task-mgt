@@ -12,7 +12,7 @@ import { getAPIErrMessage } from "@/helpers/errorHelpers";
 
 import { RefreshTokenResponse } from "@/types/auth.types";
 
-export async function POST(req: Request) {
+async function handleRefresh(req: Request) {
   try {
     const cookieStore = await cookies();
     let refreshToken: string | undefined;
@@ -54,7 +54,11 @@ export async function POST(req: Request) {
       refreshToken,
     });
 
-    const { accessToken, refreshToken: newRefreshToken } = response.data;
+    const {
+      userId,
+      accessToken,
+      refreshToken: newRefreshToken,
+    } = response.data;
 
     // Set new refresh token cookie
     const refreshTokenMaxAge = parseExpiryToSeconds(
@@ -72,6 +76,7 @@ export async function POST(req: Request) {
       {
         message: "Token refreshed successfully",
         data: {
+          userId,
           accessToken,
         },
       },
@@ -88,4 +93,12 @@ export async function POST(req: Request) {
       { status }
     );
   }
+}
+
+export async function POST(req: Request) {
+  return handleRefresh(req);
+}
+
+export async function GET(req: Request) {
+  return handleRefresh(req);
 }

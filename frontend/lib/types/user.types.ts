@@ -1,22 +1,21 @@
-export type UserRole = "user" | "admin";
+export const enum UserRole {
+  ADMIN = "admin",
+  USER = "user",
+}
 
 export interface User {
   id: string;
   email: string;
   firstName: string;
   lastName: string;
-  role: "user" | "admin";
+  role: UserRole;
   fullName: string;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface GetMeResponse {
-  user: User;
-}
-
-export interface GetUserByIdResponse {
+export interface GetUserResponse {
   user: User;
 }
 
@@ -27,8 +26,4 @@ export interface GetAllUsersResponse {
 
 export interface UpdateUserRoleRequest {
   role: UserRole;
-}
-
-export interface UpdateUserRoleResponse {
-  user: User;
 }

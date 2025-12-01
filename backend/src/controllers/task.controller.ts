@@ -87,7 +87,7 @@ export const getTasks = asyncHandler(async (req: Request, res: Response) => {
   }
 
   // Add cursor-based pagination with _id for stable sorting
-  if (cursor) {
+  if (cursor && cursor !== "null" && cursor !== "undefined") {
     const cursorTask = await Task.findById(cursor);
     if (cursorTask) {
       // Use _id as cursor since it's unique and sortable
@@ -162,7 +162,7 @@ export const getTaskById = asyncHandler(async (req: Request, res: Response) => {
 // Update task
 export const updateTask = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { title, description, status, assignedTo } = req.body;
+  const { title, description, status, assignedTo, dueDate } = req.body;
   const userId = req.user._id;
 
   const task = await Task.findById(id);
@@ -184,6 +184,7 @@ export const updateTask = asyncHandler(async (req: Request, res: Response) => {
   if (description !== undefined) task.description = description;
   if (status !== undefined) task.status = status;
   if (assignedTo !== undefined) task.assignedTo = assignedTo;
+  if (dueDate !== undefined) task.dueDate = dueDate;
   task.updatedBy = userId;
 
   await task.save();

@@ -160,6 +160,7 @@ export const refreshToken = asyncHandler(
       const tokens = await generateTokens(user._id.toString(), user.role);
 
       res.status(200).json({
+        userId: user._id.toString(),
         accessToken: tokens.accessToken,
         refreshToken: tokens.refreshToken,
       });

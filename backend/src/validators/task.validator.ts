@@ -13,6 +13,7 @@ export const createTaskSchema = z.object({
     .max(1000, "Description cannot exceed 1000 characters"),
   status: z.enum(TASK_STATUS_LIST).optional(),
   assignedTo: z.string().optional(),
+  dueDate: z.coerce.date().optional(),
 });
 
 // Update task schema
@@ -29,6 +30,7 @@ export const updateTaskSchema = z.object({
     .optional(),
   status: z.enum(TASK_STATUS_LIST).optional(),
   assignedTo: z.string().optional(),
+  dueDate: z.coerce.date().optional(),
 });
 
 // Task ID param schema

@@ -1,19 +1,19 @@
 import { baseApi } from "./base";
 import type {
-  GetMeResponse,
-  GetUserByIdResponse,
   GetAllUsersResponse,
   UpdateUserRoleRequest,
-  UpdateUserRoleResponse,
+  GetUserResponse,
+  User,
 } from "@/types/user.types";
 
 const userApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    getMe: build.query<GetMeResponse, void>({
+    getMe: build.query<User, void>({
       query: () => ({
         url: "/users/me",
         method: "GET",
       }),
+      transformResponse: (response: GetUserResponse) => response.user,
       providesTags: ["User"],
     }),
 
@@ -25,16 +25,18 @@ const userApi = baseApi.injectEndpoints({
       providesTags: ["User"],
     }),
 
-    getUserById: build.query<GetUserByIdResponse, string>({
+    getUserById: build.query<User, string>({
       query: (id) => ({
         url: `/users/${id}`,
         method: "GET",
       }),
+      transformResponse: (response: GetUserResponse) => response.user,
+
       providesTags: (_result, _error, id) => [{ type: "User", id }],
     }),
 
     updateUserRole: build.mutation<
-      UpdateUserRoleResponse,
+      User,
       { id: string; body: UpdateUserRoleRequest }
     >({
       query: ({ id, body }) => ({
@@ -42,6 +44,8 @@ const userApi = baseApi.injectEndpoints({
         method: "PATCH",
         body,
       }),
+      transformResponse: (response: GetUserResponse) => response.user,
+
       invalidatesTags: (_result, _error, { id }) => [
         { type: "User", id },
         "User",

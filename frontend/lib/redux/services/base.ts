@@ -18,6 +18,7 @@ const baseQuery = fetchBaseQuery({
     headers.set("Authorization", `Bearer ${userAuth?.accessToken}`);
     return headers;
   },
+  fetchFn: (input, init) => fetch(input, { ...init, cache: "no-store" }),
 });
 
 const authQuery = fetchBaseQuery({
@@ -35,7 +36,7 @@ const baseQueryWithReauth: BaseQueryFn<
   await mutex.waitForUnlock();
   let result = await baseQuery(args, api, extraOptions);
 
-  if (result.error?.status === 401) {
+  if (result?.error?.status === 401) {
     if (mutex.isLocked()) {
       await mutex.waitForUnlock();
       result = await baseQuery(args, api, extraOptions);
@@ -45,14 +46,21 @@ const baseQueryWithReauth: BaseQueryFn<
       try {
         const refreshResult = await authQuery("/refresh", api, extraOptions);
 
-        if (refreshResult.data) {
-          api.dispatch(setCredentials(refreshResult.data));
+        // console.log(refreshResult);
+
+        if (
+          refreshResult?.data &&
+          typeof refreshResult.data === "object" &&
+          "data" in refreshResult.data
+        ) {
+          api.dispatch(setCredentials((refreshResult.data as any).data));
 
           result = await baseQuery(args, api, extraOptions);
         } else {
           api.dispatch(clearCredentials(true));
         }
-      } catch {
+      } catch (error) {
+        console.error("Error during token refresh:", error);
         api.dispatch(clearCredentials(true));
       } finally {
         release();
@@ -64,7 +72,7 @@ const baseQueryWithReauth: BaseQueryFn<
 
 const baseApi = createApi({
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["User"],
+  tagTypes: ["User", "Task"],
   endpoints: (build) => ({}),
   keepUnusedDataFor: 60 * 60, //Cache data for 1 hour
 });

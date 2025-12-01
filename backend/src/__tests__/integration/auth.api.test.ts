@@ -155,6 +155,7 @@ describe("Auth API Integration Tests", () => {
         .send({ refreshToken })
         .expect(200);
 
+      expect(response.body).toHaveProperty("userId");
       expect(response.body).toHaveProperty("accessToken");
       expect(response.body).toHaveProperty("refreshToken");
       expect(response.body.refreshToken).not.toBe(refreshToken); // Should be a new token

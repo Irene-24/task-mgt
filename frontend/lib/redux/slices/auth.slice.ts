@@ -1,11 +1,6 @@
 import { createSlice, isAnyOf, PayloadAction } from "@reduxjs/toolkit";
 import { authSessionApi } from "@/lib/redux/services/auth-session";
-import {
-  UsedAuthResponse,
-  AuthState,
-  AuthStatus,
-  UsedRefreshTokenResponse,
-} from "@/types/auth.types";
+import { UsedAuthResponse, AuthState, AuthStatus } from "@/types/auth.types";
 
 const initialState: AuthState = {
   accessToken: "",
@@ -46,7 +41,8 @@ const userAuthSlice = createSlice({
       .addMatcher(
         isAnyOf(
           authSessionApi.endpoints.login.matchFulfilled,
-          authSessionApi.endpoints.register.matchFulfilled
+          authSessionApi.endpoints.register.matchFulfilled,
+          authSessionApi.endpoints.refresh.matchFulfilled
         ),
         (state, { payload }: PayloadAction<UsedAuthResponse>) => {
           state.accessToken = payload.accessToken;
@@ -55,14 +51,7 @@ const userAuthSlice = createSlice({
           state.showToast = false;
         }
       )
-      .addMatcher(
-        authSessionApi.endpoints.refresh.matchFulfilled,
-        (state, { payload }: PayloadAction<UsedRefreshTokenResponse>) => {
-          state.accessToken = payload.accessToken;
-          state.authStatus = AuthStatus.resolved;
-          state.showToast = false;
-        }
-      )
+
       .addMatcher(
         isAnyOf(
           authSessionApi.endpoints.login.matchRejected,

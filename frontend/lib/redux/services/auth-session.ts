@@ -17,12 +17,16 @@ const authSessionApi = createApi({
         method: "POST",
         body: { email, password },
       }),
+      transformResponse: (response: { data: UsedAuthResponse }) =>
+        response.data,
     }),
     refresh: build.mutation<UsedAuthResponse, void>({
       query: () => ({
         url: `/refresh`,
         method: "POST",
       }),
+      transformResponse: (response: { data: UsedAuthResponse }) =>
+        response.data,
     }),
     logout: build.mutation<any, void>({
       query: () => ({
@@ -36,6 +40,8 @@ const authSessionApi = createApi({
         method: "POST",
         body,
       }),
+      transformResponse: (response: { data: UsedAuthResponse }) =>
+        response.data,
     }),
   }),
 });

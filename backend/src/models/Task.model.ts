@@ -9,6 +9,7 @@ export interface ITask extends Document {
   createdBy: Types.ObjectId; // Reference to User
   assignedTo?: Types.ObjectId; // Reference to User assigned
   updatedBy?: Types.ObjectId; // Reference to User who last updated
+  dueDate?: Date; // Optional due date
   createdAt: Date;
   updatedAt: Date;
   toggleStatus(): Promise<ITask>;
@@ -52,6 +53,10 @@ const taskSchema = new Schema<ITask>(
       ref: "User",
       default: null,
     },
+    dueDate: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true, // Automatically adds createdAt and updatedAt
@@ -79,6 +84,8 @@ taskSchema.index({ status: 1 });
 taskSchema.index({ createdAt: -1 });
 taskSchema.index({ createdBy: 1, status: 1 }); // Compound index for filtering user's tasks by status
 taskSchema.index({ assignedTo: 1 }); // Index for filtering tasks by assigned user
+taskSchema.index({ dueDate: 1 }); // Index for filtering/sorting by due date
+taskSchema.index({ status: 1, dueDate: 1 }); // Compound index for overdue/upcoming tasks by status
 
 // Text index for search functionality on title and description
 taskSchema.index({ title: "text", description: "text" });

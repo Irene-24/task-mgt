@@ -29,7 +29,7 @@
       "@/services/*": ["./lib/redux/services/*"],
       "@/slices/*": ["./lib/redux/slices/*"],
       "@/redux/*": ["./lib/redux/*"],
-      "@/hooks/*": ["./lib/hooks/*"],
+      "@/hooks/*": ["./hooks/*"],
       "@/helpers/*": ["./lib/helpers/*"],
       "@/lib/*": ["./lib/*"],
       "@/*": ["./*"]
