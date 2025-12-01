@@ -12,7 +12,7 @@ A robust RESTful API for task management built with Node.js, Express, TypeScript
 - **Task Management**
   - Create, read, update, and delete tasks
   - Task status tracking (pending/completed)
-  - Search and filter tasks by status, priority, and due date
+  - Search and filter tasks
   - Pagination with cursor-based navigation
   - Access control
 
@@ -31,7 +31,6 @@ A robust RESTful API for task management built with Node.js, Express, TypeScript
 
 - **Testing**
   - Comprehensive unit and integration tests
-  - 143+ test cases with high coverage
   - In-memory MongoDB for fast testing
 
 ## 📋 Prerequisites
@@ -249,11 +248,12 @@ The API uses JWT tokens for authentication:
 
 ### Task
 - `title`: string (required, 3-100 chars)
-- `description`: string (optional, max 500 chars)
+- `description`: string (required, 10-1000 chars)
 - `status`: enum ['pending', 'completed'] (default: 'pending')
-- `priority`: enum ['low', 'medium', 'high'] (default: 'medium')
+- `dueDate`: Date (optional)
 - `createdBy`: ObjectId (ref: User, required)
 - `assignedTo`: ObjectId (ref: User, optional)
+- `updatedBy`: ObjectId (ref: User, optional)
 - `createdAt`: Date (auto-generated)
 - `updatedAt`: Date (auto-generated)
 

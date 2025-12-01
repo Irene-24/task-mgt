@@ -26,9 +26,9 @@ A modern task management application built with Next.js 16.
 - ✅ Cursor-based pagination with "Load More" button
 - ✅ Virtualization for performance with large lists
 - ✅ Task statistics dashboard (total, pending, completed)
-- ✅ Advanced filtering (status, search, assignee)
+- ✅ Task filtering
 - ✅ Task assignment to users
-- ✅ Due date tracking with calendar picker
+- ✅ Due date tracking
 - ✅ Grid and list view modes
 
 
@@ -44,12 +44,12 @@ A modern task management application built with Next.js 16.
 - Loading skeletons
 - Error handling with user-friendly messages
 - Accessible components (Radix UI)
-- ScrollArea for mobile forms
+
 
 ## Getting Started
 
 ### Prerequisites
-- Node.js 18+ (or use pnpm/yarn)
+- Node.js 18+
 - Backend API running on `http://localhost:5050` (or configure `NEXT_PUBLIC_API_URL`)
 
 ### Installation
@@ -57,8 +57,6 @@ A modern task management application built with Next.js 16.
 ```bash
 # Install dependencies
 npm install
-# or
-pnpm install
 ```
 
 ### Environment Variables
@@ -67,6 +65,9 @@ Create a `.env.local` file:
 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:5050/v1
+SALT=some_random_salt_value
+JWT_REFRESH_EXPIRES_IN=7d
+
 ```
 
 ### Development
@@ -91,6 +92,8 @@ The app will be available at [http://localhost:7878](http://localhost:7878)
 
 ```
 frontend/
+├── __tests__/               # Test files
+│   └── e2e/                 # Playwright E2E tests
 ├── app/                      # Next.js app router
 │   ├── (auth)/              # Auth pages (login, register)
 │   ├── dashboard/           # Protected dashboard page
@@ -99,6 +102,7 @@ frontend/
 ├── components/
 │   ├── Dashboard/           # Dashboard components
 │   │   ├── AppSidebar.tsx   # Sidebar with stats
+        |── UserCard.tsx     # Show user profile
 │   │   └── Tasks/           # Task-related components
 │   │       ├── TaskForm.tsx        # Create/edit form
 │   │       ├── TaskList.tsx        # List with virtualization
@@ -127,10 +131,13 @@ frontend/
 ├── hooks/                   # Custom React hooks
 │   ├── useLoggedInUser.ts   # Current user hook
 │   └── useLogout.ts         # Logout hook
-└── types/                   # TypeScript types
-    ├── task.types.ts
-    ├── user.types.ts
-    └── auth.types.ts
+├── types/                   # TypeScript types
+│   ├── task.types.ts
+│   ├── user.types.ts
+│   └── auth.types.ts
+├── playwright.config.ts     # Playwright test config
+├── next.config.ts           # Next.js configuration
+└── tsconfig.json            # TypeScript config
 ```
 
 ## Key Features Implementation
@@ -138,8 +145,8 @@ frontend/
 ### Pagination with Virtualization
 Uses RTK Query's infinite query + TanStack Virtual for performance:
 - Cursor-based pagination with "Load More" button
-- Loads 20 tasks per page
-- Virtual scrolling renders only visible items
+- Loads X tasks per page
+
 
 ### Cache Updates
 Manual cache updates prevent unnecessary refetches:
@@ -192,7 +199,7 @@ Base query with mutex-protected reauth:
 
 ## Performance Optimizations
 
-1. **Virtual Scrolling**: Only renders visible tasks in viewport
+1. **Virtualization**: Only renders visible tasks in viewport
 2. **Optimistic Cache Updates**: Manual cache updates prevent unnecessary refetches
 3. **Debounced Search**: 500ms debounce on search input
 4. **Cursor-based Pagination**: Efficient data loading with "Load More"
@@ -229,14 +236,28 @@ lsof -ti:7878 | xargs kill -9
 
 
 
-## Contributing
+## Testing
 
-1. Follow TypeScript strict mode
-2. Use existing component patterns
-3. Add proper type definitions
-4. Test on mobile and desktop
-5. Ensure dark mode compatibility
+### End-to-End Tests
+The project includes comprehensive E2E tests using Playwright:
 
-## License
+```bash
+# Run E2E tests
+npm run test:e2e
 
-This project is part of a task management system case study.
+# Run E2E tests with UI
+npm run test:e2e:ui
+```
+
+**Test Coverage** (17 tests):
+- ✅ Dashboard display and navigation
+- ✅ View mode switching (grid/list)
+- ✅ Task CRUD operations
+- ✅ Status updates and filtering
+- ✅ Role-based permissions
+- ✅ Search and pagination
+
+
+**Test Files**:
+- `__tests__/e2e/tasks.spec.ts` - Main task management tests
+- `playwright.config.ts` - Playwright configuration
